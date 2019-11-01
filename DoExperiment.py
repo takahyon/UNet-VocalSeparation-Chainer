@@ -25,16 +25,18 @@ network.TrainUNet(Xlist,Ylist,savefile="unet.model",epoch=30)
 """
 Code example for performing vocal separation with U-Net
 """
-fname = "original_mix.wav"
-mag, phase = util.LoadAudio(fname)
-start = 2048
+import glob
+fl = glob.glob('audio/*')
+fname = fl[1]
+mag, phase = util.LoadAudio('audio/01 Calling (2).wav')
+start = 0
 end = 2048+1024
 
 mask = util.ComputeMask(mag[:, start:end], unet_model="unet.model", hard=False)
 
 util.SaveAudio(
-    "vocal-%s" % fname, mag[:, start:end]*mask, phase[:, start:end])
+    "%s-vocal.wav" % fname, mag[:, start:end]*mask, phase[:, start:end])
 util.SaveAudio(
-    "inst-%s" % fname, mag[:, start:end]*(1-mask), phase[:, start:end])
+    "%s-inst.wav" % fname, mag[:, start:end]*(1-mask), phase[:, start:end])
 util.SaveAudio(
-    "orig-%s" % fname, mag[:, start:end], phase[:, start:end])
+    "%s-orig.wav" % fname, mag[:, start:end], phase[:, start:end])
